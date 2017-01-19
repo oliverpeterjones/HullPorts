@@ -1,26 +1,27 @@
-#
-# This is the server logic of a Shiny web application. You can run the 
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
+library(readxl)
+library(ggplot2)
+library(dplyr)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
+  data <- read_excel("./Data/Hull Port - 2000-2015 - types data.xlsx")
+  output$YearTotalPlot <- renderPlot({
+    
+    if (input$CategoriesInput == "All"){
+      newData <- data
+    } else {
+      newData <- data %>% 
+        filter(`Cargo Category Description` == input$CategoriesInput)
+    }
+    
    
-  output$distPlot <- renderPlot({
     
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2] 
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    g <- ggplot(data=newData) +
+      geom_bar(aes(x=Year, y=`Total (thousand tonnes)`), stat="identity") +
+      ggtitle(paste0("Total cargo pre year for ", input$CategoriesInput, " Category."))
     
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    
+    g
   })
   
 })

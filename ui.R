@@ -1,33 +1,31 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-# 
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Hull Ports"),
   
-  # Sidebar with a slider input for number of bins 
+  # Sidebar 
   sidebarLayout(
     sidebarPanel(
-       sliderInput("bins",
-                   "Number of bins:",
-                   min = 1,
-                   max = 50,
-                   value = 30)
+      selectInput(inputId = "CategoriesInput", label="Choose a Category to split the data.",
+                  choices = c("All",
+                  "Other general cargo & containers <20'", 
+                  "Iron and steel products",                        
+                  "Liquefied gas",                                  
+                  "Oil products",                                   
+                  "Other liquid bulk products",                     
+                  "Ores",                                           
+                  "Other dry bulk",                                 
+                  "Forestry products",                              
+                  "Agricultural products (eg grain, soya, tapioca)",
+                  "Coal"))
     ),
     
-    # Show a plot of the generated distribution
+    # Show a plot
     mainPanel(
-       plotOutput("distPlot")
+       plotOutput("YearTotalPlot")
     )
   )
 ))

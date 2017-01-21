@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
   data$Year <- as.factor(as.integer(data$Year))
   # making sure that total is kept to 3dp (i.e 4 digits)
   data$`Total (thousand tonnes)` <- round(data$`Total (thousand tonnes)`, 4)
-  # remove (general) cargo category - thsi is because we can use the description 
+  # remove (general) cargo category - this is because we can use the description 
   # column as factors so don't need this
   data <- data[-c(3, 6)]
   # create factor groups for (general) cargo category decription columns

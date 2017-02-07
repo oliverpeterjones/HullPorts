@@ -22,7 +22,7 @@ shinyUI(fluidPage(
       # content of tab
       h2("Hull Ports App"),
       h6("(created by Karina Marks)"),
-      h4("This is a quick mock up app, that I have created to show what can be done with Shiny."),
+      h4("This is a quick mock up app, that I have created to visualise the change in cargo being moved in and out of the port in Hull, over the years 2000 to 2015."),
       h4("'Table' - a tab containing all the data used to create the graphs, (data from ONS), shown in interactive table."),
       h4("'Graphs' - a tab containing examples of different ways of displaying the data by interactive graphs")
       
@@ -52,7 +52,7 @@ shinyUI(fluidPage(
               selectInput(
                 inputId = "CategoriesInput", 
                 label="Choose a Category to split the data.",
-                choices = c("All", "Other general cargo & containers <20'",
+                choices = c("All Categories", "Other general cargo & containers <20'",
                             "Iron and steel products", "Liquefied gas",                                  
                             "Oil products", "Other liquid bulk products",                     
                             "Ores", "Other dry bulk", "Forestry products",                              

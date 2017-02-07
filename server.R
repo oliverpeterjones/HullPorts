@@ -50,7 +50,7 @@ shinyServer(function(input, output) {
     # looking at the categorical input
     # if all is chosen then the whole data frame is used
     # if a specific category is selected then data is filtered by that input
-    if (input$CategoriesInput == "All"){
+    if (input$CategoriesInput == "All Categories"){
       newData <- data
     } else {
       newData <- data %>% 
@@ -61,8 +61,8 @@ shinyServer(function(input, output) {
     # creating the bar graph
     g <- ggplot(data=newData) +
       geom_bar(aes(x=Year, y=`Total (thousand tonnes)`), stat="identity", fill="sienna1") +
-      ggtitle(paste0("Total cargo per year for ", input$CategoriesInput)) +
-      theme_light() 
+      ggtitle(paste0("Total Cargo per Year for ", input$CategoriesInput)) +
+      theme_light()
     
     # plotting the graph - the final output
     g
@@ -88,8 +88,14 @@ shinyServer(function(input, output) {
     g <- ggplot(data=newData) +
       geom_bar(aes(x=`Cargo Category Description`, y=`Total (thousand tonnes)`), 
                stat="identity", fill="sienna1") +
-      ggtitle(paste0("Total cargo per Category for ", input$YearInput)) +
-      theme_light() 
+      ggtitle(paste0("Total Cargo per Category for ", input$YearInput)) +
+      theme_light() +
+      scale_x_discrete(labels = c("Agricultural products (eg grain, soya, tapioca)" = "Agriculture",
+                                  "Coal" = "Coal", "Forestry products" = "Forestry",
+                                  "Iron and steel products" = "Iron & Steel", "Liquefied gas" = "Liq. Gas",
+                                  "Oil products" = "Oil", "Ores" = "Ores", "Other dry bulk" = "Other dry bulk", 
+                                  "Other general cargo & containers <20'" = "Other general", 
+                                  "Other liquid bulk products" = "Other Liq."))
     
     # plotting graph - final output
     g

@@ -6,6 +6,8 @@ library(readxl)
 library(ggplot2)
 # used for tidying the data
 library(dplyr)
+# displaying the table
+library(DT)
 
 
 shinyServer(function(input, output) {
@@ -30,8 +32,13 @@ shinyServer(function(input, output) {
     
   # for the table tab
   ## TODO -  download the datatable package and make this nicer
-  output$Table <- renderTable(
-    data
+  output$Table <- renderDataTable(
+    data, extensions = 'Buttons', 
+    filter = "top", options = list(
+      dom = 'Brtip',
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+      pageLength = 9
+    )
   )
   
   
@@ -53,10 +60,9 @@ shinyServer(function(input, output) {
    
     # creating the bar graph
     g <- ggplot(data=newData) +
-      geom_bar(aes(x=Year, y=`Total (thousand tonnes)`), stat="identity") +
-      ggtitle(paste0("Total cargo per year for ", input$CategoriesInput,
-                     " Category.")) +
-      theme_classic() 
+      geom_bar(aes(x=Year, y=`Total (thousand tonnes)`), stat="identity", fill="sienna1") +
+      ggtitle(paste0("Total cargo per year for ", input$CategoriesInput)) +
+      theme_light() 
     
     # plotting the graph - the final output
     g
@@ -81,7 +87,7 @@ shinyServer(function(input, output) {
     # creating the graphical object
     g <- ggplot(data=newData) +
       geom_bar(aes(x=`Cargo Category Description`, y=`Total (thousand tonnes)`), 
-               stat="identity") +
+               stat="identity", fill="sienna1") +
       ggtitle(paste0("Total cargo per Category for ", input$YearInput)) +
       theme_light() 
     
@@ -100,8 +106,9 @@ shinyServer(function(input, output) {
     # creating bar chart where data is split by color due to category
     g <- ggplot(sortedData) +
       geom_bar(aes(x=Year, y=`Total (thousand tonnes)`, 
-                   col = `General Cargo Category Description`), 
-               stat="identity")
+                   fill = `General Cargo Category Description`), 
+               stat="identity")+
+      theme_light() 
     
     # the output graph
     g
@@ -121,7 +128,8 @@ shinyServer(function(input, output) {
     # plotting graph
     g <- ggplot(summarisedData)+
       geom_bar(aes(x = Year, y = Total, fill=`Cargo Category Description`),
-               stat = "identity") 
+               stat = "identity") +
+      theme_light() 
      
     # return the graph as the output
     g 

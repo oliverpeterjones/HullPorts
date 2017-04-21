@@ -6,6 +6,8 @@ library(readxl)
 library(ggplot2)
 # used for tidying the data
 library(dplyr)
+# displaying the table
+library(DT)
 
 
 shinyServer(function(input, output) {
@@ -19,7 +21,7 @@ shinyServer(function(input, output) {
   data$Year <- as.factor(as.integer(data$Year))
   # making sure that total is kept to 3dp (i.e 4 digits)
   data$`Total (thousand tonnes)` <- round(data$`Total (thousand tonnes)`, 4)
-  # remove (general) cargo category - thsi is because we can use the description 
+  # remove (general) cargo category - this is because we can use the description 
   # column as factors so don't need this
   data <- data[-c(3, 6)]
   # create factor groups for (general) cargo category decription columns
@@ -30,8 +32,13 @@ shinyServer(function(input, output) {
     
   # for the table tab
   ## TODO -  download the datatable package and make this nicer
-  output$Table <- renderTable(
-    data
+  output$Table <- renderDataTable(
+    data, extensions = 'Buttons', 
+    filter = "top", options = list(
+      dom = 'Brtip',
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+      pageLength = 9
+    )
   )
   
   
@@ -43,7 +50,7 @@ shinyServer(function(input, output) {
     # looking at the categorical input
     # if all is chosen then the whole data frame is used
     # if a specific category is selected then data is filtered by that input
-    if (input$CategoriesInput == "All"){
+    if (input$CategoriesInput == "All Categories"){
       newData <- data
     } else {
       newData <- data %>% 
@@ -53,10 +60,9 @@ shinyServer(function(input, output) {
    
     # creating the bar graph
     g <- ggplot(data=newData) +
-      geom_bar(aes(x=Year, y=`Total (thousand tonnes)`), stat="identity") +
-      ggtitle(paste0("Total cargo per year for ", input$CategoriesInput,
-                     " Category.")) +
-      theme_classic() 
+      geom_bar(aes(x=Year, y=`Total (thousand tonnes)`), stat="identity", fill="sienna1") +
+      ggtitle(paste0("Total Cargo per Year for ", input$CategoriesInput)) +
+      theme_light()
     
     # plotting the graph - the final output
     g
@@ -81,9 +87,15 @@ shinyServer(function(input, output) {
     # creating the graphical object
     g <- ggplot(data=newData) +
       geom_bar(aes(x=`Cargo Category Description`, y=`Total (thousand tonnes)`), 
-               stat="identity") +
-      ggtitle(paste0("Total cargo per Category for ", input$YearInput)) +
-      theme_light() 
+               stat="identity", fill="sienna1") +
+      ggtitle(paste0("Total Cargo per Category for ", input$YearInput)) +
+      theme_light() +
+      scale_x_discrete(labels = c("Agricultural products (eg grain, soya, tapioca)" = "Agriculture",
+                                  "Coal" = "Coal", "Forestry products" = "Forestry",
+                                  "Iron and steel products" = "Iron & Steel", "Liquefied gas" = "Liq. Gas",
+                                  "Oil products" = "Oil", "Ores" = "Ores", "Other dry bulk" = "Other dry bulk", 
+                                  "Other general cargo & containers <20'" = "Other general", 
+                                  "Other liquid bulk products" = "Other Liq."))
     
     # plotting graph - final output
     g
@@ -100,8 +112,9 @@ shinyServer(function(input, output) {
     # creating bar chart where data is split by color due to category
     g <- ggplot(sortedData) +
       geom_bar(aes(x=Year, y=`Total (thousand tonnes)`, 
-                   col = `General Cargo Category Description`), 
-               stat="identity")
+                   fill = `General Cargo Category Description`), 
+               stat="identity")+
+      theme_light() 
     
     # the output graph
     g
@@ -121,7 +134,8 @@ shinyServer(function(input, output) {
     # plotting graph
     g <- ggplot(summarisedData)+
       geom_bar(aes(x = Year, y = Total, fill=`Cargo Category Description`),
-               stat = "identity") 
+               stat = "identity") +
+      theme_light() 
      
     # return the graph as the output
     g 
